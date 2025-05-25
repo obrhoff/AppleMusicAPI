@@ -1,7 +1,7 @@
 name: Update Swagger UI
 on:
   schedule:
-    - cron:  '0 10 * * *'
+    - cron: "0 10 * * *"
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
         if: steps.swagger-ui.outputs.current_tag != steps.swagger-ui.outputs.release_tag
         env:
           RELEASE_TAG: ${{ steps.swagger-ui.outputs.release_tag }}
-          SWAGGER_YAML: "swagger.yaml"
+          SWAGGER_YAML: "openapi.yaml"
         run: |
           # Delete the dist directory and index.html
           rm -fr dist index.html
