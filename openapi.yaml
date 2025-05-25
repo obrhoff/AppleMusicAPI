@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Apple MusicKit API
+  title: Apple Music API
   version: 1.0.0
-  description: Full OpenAPI spec covering Apple Music catalog & user library control.
+  description: Comprehensive OpenAPI specification for interacting with Apple Music's catalog and user library.
   contact:
     email: dennis@obrhoff.de
     url: https://obrhoff.de
@@ -18,6 +18,7 @@ paths:
     get:
       tags: [Search]
       summary: Search the Apple Music catalog
+      description: Search for various content types in the Apple Music catalog including songs, albums, artists, and playlists.
       security:
         - BearerAuth: []
       parameters:
@@ -25,9 +26,10 @@ paths:
         - name: term
           in: query
           required: true
-          description: The search term to query the catalog.
+          description: The search term to query the catalog (e.g., "Kiesza").
           schema:
             type: string
+            example: "Kiesza"
         - name: types
           in: query
           required: true
@@ -38,6 +40,7 @@ paths:
             type: array
             items:
               $ref: "#/components/schemas/CatalogSearchType"
+            example: ["songs", "albums"]
         - name: with
           in: query
           required: false
@@ -49,6 +52,7 @@ paths:
             items:
               type: string
               enum: [topResults]
+            example: ["topResults"]
         - $ref: "#/components/parameters/Language"
         - $ref: "#/components/parameters/Limit"
         - $ref: "#/components/parameters/Offset"
@@ -60,106 +64,588 @@ paths:
     get:
       tags: [Search]
       summary: Provides search term hints for the catalog
+      description: Get search term suggestions based on partial input.
       security:
         - BearerAuth: []
       parameters:
         - name: term
           in: query
           required: true
-          description: The search term to query the catalog.
+          description: The partial search term to get hints for.
           schema:
             type: string
+            example: "Kie"
         - $ref: "#/components/parameters/Language"
       responses:
         "200": { $ref: "#/components/responses/SearchHintsResponse" }
         "401": { $ref: "#/components/responses/Unauthorized" }
 
-  /catalog/{storefront}/songs/{song_id}:
-    get:
-      tags: [Search]
-      summary: Get a catalog song
-      description: Fetch a specific song from the Apple Music catalog.
-      security:
-        - BearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/Storefront"
-        - name: song_id
-          in: path
-          required: true
-          description: The identifier of the catalog song.
-          schema:
-            type: string
-        - $ref: "#/components/parameters/Language"
-        - $ref: "#/components/parameters/Include"
-        - $ref: "#/components/parameters/Extend"
-      responses:
-        "200":
-          description: Catalog song retrieved
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SongRelationship"
-        "default": { $ref: "#/components/responses/Error" }
-
-  /catalog/{storefront}/albums/{album_id}:
-    get:
-      tags: [Catalog]
-      summary: Get a catalog album
-      description: Fetch a specific album from the Apple Music catalog.
-      security:
-        - BearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/Storefront"
-        - name: album_id
-          in: path
-          required: true
-          description: The identifier of the catalog album.
-          schema:
-            type: string
-        - $ref: "#/components/parameters/Language"
-        - $ref: "#/components/parameters/Include"
-        - $ref: "#/components/parameters/Extend"
-      responses:
-        "200":
-          description: Catalog album retrieved
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AlbumRelationship"
-        "default": { $ref: "#/components/responses/Error" }
-
-  # Catalog Artists
   /catalog/{storefront}/artists/{artist_id}:
     get:
       tags: [Catalog]
       summary: Get a catalog artist
-      description: Fetch a specific artist from the Apple Music catalog.
+      description: Fetch detailed information about a specific artist from the Apple Music catalog.
       security:
         - BearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/Storefront"
         - name: artist_id
           in: path
           required: true
           description: The identifier of the catalog artist.
           schema:
             type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
         - $ref: "#/components/parameters/Language"
         - $ref: "#/components/parameters/Include"
         - $ref: "#/components/parameters/Extend"
       responses:
         "200":
-          description: Catalog artist retrieved
+          description: Catalog artist retrieved successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ArtistRelationship"
         "default": { $ref: "#/components/responses/Error" }
 
+  /catalog/{storefront}/artists/{artist_id}/albums:
+    get:
+      tags: [Catalog]
+      summary: Get albums by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/playlists:
+    get:
+      tags: [Catalog]
+      summary: Get playlists featuring a catalog artist
+      description: Fetch playlists that feature a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Artist playlists retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaylistRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/genres:
+    get:
+      tags: [Catalog]
+      summary: Get genres associated with a catalog artist
+      description: Fetch genres associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/station:
+    get:
+      tags: [Catalog]
+      summary: Get radio station for a catalog artist
+      description: Fetch the radio station associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/music-videos:
+    get:
+      tags: [Catalog]
+      summary: Get music videos by a catalog artist
+      description: Fetch music videos associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/albums/{album_id}:
+    get:
+      tags: [Catalog]
+      summary: Get a catalog album
+      description: Fetch detailed information about a specific album from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Catalog album retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/albums/{album_id}/tracks:
+    get:
+      tags: [Catalog]
+      summary: Get tracks from a catalog album
+      description: Fetch tracks associated with a specific album from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Album tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SongRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/albums/{album_id}/artists:
+    get:
+      tags: [Catalog]
+      summary: Get artists from a catalog album
+      description: Fetch artists associated with a specific album from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Album artists retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArtistRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/albums/{album_id}/library:
+    get:
+      tags: [Catalog]
+      summary: Check if album is in user's library
+      description: Check if a specific album is in the user's library.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/albums/{album_id}/record-labels:
+    get:
+      tags: [Catalog]
+      summary: Get record labels for a catalog album
+      description: Fetch record labels associated with a specific album from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs/{song_id}:
+    get:
+      tags: [Catalog]
+      summary: Get a catalog song
+      description: Fetch detailed information about a specific song from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          description: The identifier of the catalog song.
+          schema:
+            type: string
+            example: "1440812311"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Catalog song retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SongRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs/{song_id}/albums:
+    get:
+      tags: [Catalog]
+      summary: Get albums featuring a catalog song
+      description: Fetch albums that feature a specific song from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          description: The identifier of the catalog song.
+          schema:
+            type: string
+            example: "1440812311"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Song albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs/{song_id}/artists:
+    get:
+      tags: [Catalog]
+      summary: Get artists of a catalog song
+      description: Fetch artists associated with a specific song from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          description: The identifier of the catalog song.
+          schema:
+            type: string
+            example: "1440812311"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Song artists retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArtistRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs/{song_id}/composer:
+    get:
+      tags: [Catalog]
+      summary: Get composer of a catalog song
+      description: Fetch the composer of a specific song from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          description: The identifier of the catalog song.
+          schema:
+            type: string
+            example: "1440812311"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs/{song_id}/genres:
+    get:
+      tags: [Catalog]
+      summary: Get genres of a catalog song
+      description: Fetch genres associated with a specific song from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          description: The identifier of the catalog song.
+          schema:
+            type: string
+            example: "1440812311"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs/{song_id}/library:
+    get:
+      tags: [Catalog]
+      summary: Check if song is in user's library
+      description: Check if a specific song is in the user's library.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          description: The identifier of the catalog song.
+          schema:
+            type: string
+            example: "1440812311"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs/{song_id}/music-videos:
+    get:
+      tags: [Catalog]
+      summary: Get music videos for a catalog song
+      description: Fetch music videos associated with a specific song from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          description: The identifier of the catalog song.
+          schema:
+            type: string
+            example: "1440812311"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs/{song_id}/station:
+    get:
+      tags: [Catalog]
+      summary: Get radio station for a catalog song
+      description: Fetch the radio station associated with a specific song from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: song_id
+          in: path
+          required: true
+          description: The identifier of the catalog song.
+          schema:
+            type: string
+            example: "1440812311"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/playlists/{playlist_id}:
+    get:
+      tags: [Catalog]
+      summary: Get a catalog playlist
+      description: Fetch detailed information about a specific playlist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PlaylistId"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/CatalogPlaylistResponse" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/playlists/{playlist_id}/tracks:
+    get:
+      tags: [Catalog]
+      summary: Get tracks from a catalog playlist
+      description: Fetch tracks associated with a specific playlist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PlaylistId"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Playlist tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SongRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/playlists/{playlist_id}/library:
+    get:
+      tags: [Catalog]
+      summary: Check if playlist is in user's library
+      description: Check if a specific playlist is in the user's library.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PlaylistId"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/playlists/{playlist_id}/curator:
+    get:
+      tags: [Catalog]
+      summary: Get curator of a catalog playlist
+      description: Fetch the curator of a specific playlist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PlaylistId"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
+
   /me/library/search:
     get:
       tags: [Library]
       summary: Search the user's library
+      description: Search for content in the user's Apple Music library.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -170,6 +656,7 @@ paths:
           description: The search term to query the library.
           schema:
             type: string
+            example: "Kiesza"
         - name: types
           in: query
           required: true
@@ -180,6 +667,7 @@ paths:
             type: array
             items:
               $ref: "#/components/schemas/LibrarySearchType"
+            example: ["library-songs", "library-albums"]
         - $ref: "#/components/parameters/Language"
         - $ref: "#/components/parameters/Limit"
         - $ref: "#/components/parameters/Offset"
@@ -191,6 +679,7 @@ paths:
     get:
       tags: [Library]
       summary: Get user's library albums
+      description: Fetch albums from the user's Apple Music library.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -204,11 +693,67 @@ paths:
         "200": { $ref: "#/components/responses/LibraryAlbumsResponse" }
         "default": { $ref: "#/components/responses/Error" }
 
-  # User Library Songs
+  /me/library/albums/{album_id}:
+    get:
+      tags: [Library]
+      summary: Get user's library album by ID
+      description: Fetch a specific album from the user's Apple Music library.
+      security:
+        - BearerAuth: []
+        - MusicUserAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the library album.
+          schema:
+            type: string
+            example: "l.1440812310"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Library album retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryAlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /me/library/albums/{album_id}/tracks:
+    get:
+      tags: [Library]
+      summary: Get tracks from a library album
+      description: Fetch tracks associated with a specific album from the user's Apple Music library.
+      security:
+        - BearerAuth: []
+        - MusicUserAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the library album.
+          schema:
+            type: string
+            example: "l.1440812310"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Album tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibrarySongRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
   /me/library/songs:
     get:
       tags: [Library]
       summary: Get user's library songs
+      description: Fetch songs from the user's Apple Music library.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -226,6 +771,7 @@ paths:
     get:
       tags: [Library]
       summary: Get user's library playlists
+      description: Fetch playlists from the user's Apple Music library.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -239,10 +785,33 @@ paths:
         "200": { $ref: "#/components/responses/LibraryPlaylistsResponse" }
         "default": { $ref: "#/components/responses/Error" }
 
+  /me/library/playlists/{playlist_id}:
+    get:
+      tags: [Library]
+      summary: Get a library playlist
+      description: Fetch a specific playlist from the user's Apple Music library.
+      security:
+        - BearerAuth: []
+        - MusicUserAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PlaylistId"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+      responses:
+        "200":
+          description: Library playlist retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryPlaylistsResponse"
+        "default": { $ref: "#/components/responses/Error" }
+
   /me/library/playlists/{playlist_id}/tracks:
     get:
       tags: [Library]
       summary: Get tracks from a library playlist
+      description: Fetch tracks associated with a specific playlist from the user's Apple Music library.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -254,14 +823,19 @@ paths:
         - $ref: "#/components/parameters/Include"
         - $ref: "#/components/parameters/Extend"
       responses:
-        "200": { $ref: "#/components/responses/PlaylistTracksResponse" }
+        "200":
+          description: Playlist tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibrarySongsResponse"
         "default": { $ref: "#/components/responses/Error" }
 
-  # Recommendations
   /me/recommendations:
     get:
       tags: [Recommendations]
       summary: Get user recommendations
+      description: Fetch personalized recommendations for the user.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -277,6 +851,7 @@ paths:
     get:
       tags: [Recommendations]
       summary: Get a specific recommendation
+      description: Fetch detailed information about a specific recommendation.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -293,6 +868,7 @@ paths:
     get:
       tags: [Recommendations]
       summary: Get contents of a specific recommendation
+      description: Fetch the contents of a specific recommendation.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -305,45 +881,11 @@ paths:
         "200": { $ref: "#/components/responses/RecommendationContentsResponse" }
         "default": { $ref: "#/components/responses/Error" }
 
-  /catalog/{storefront}/playlists/{playlist_id}:
-    get:
-      tags: [Catalog]
-      summary: Get a catalog playlist
-      security:
-        - BearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/PlaylistId"
-        - $ref: "#/components/parameters/Storefront"
-        - $ref: "#/components/parameters/Language"
-        - $ref: "#/components/parameters/Include"
-        - $ref: "#/components/parameters/Extend"
-      responses:
-        "200": { $ref: "#/components/responses/CatalogPlaylistResponse" }
-        "default": { $ref: "#/components/responses/Error" }
-
-  /catalog/{storefront}/playlists/{playlist_id}/tracks:
-    get:
-      tags: [Catalog]
-      summary: Get tracks from a catalog playlist
-      security:
-        - BearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/PlaylistId"
-        - $ref: "#/components/parameters/Storefront"
-        - $ref: "#/components/parameters/Language"
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Offset"
-        - $ref: "#/components/parameters/Include"
-        - $ref: "#/components/parameters/Extend"
-      responses:
-        "200": { $ref: "#/components/responses/CatalogPlaylistTracksResponse" }
-        "default": { $ref: "#/components/responses/Error" }
-
   /ping:
     get:
       tags: [System]
       summary: Ping the Apple Music API
-      description: Simple health check endpoint to validate token and API availability
+      description: Simple health check endpoint to validate token and API availability.
       security:
         - BearerAuth: []
         - MusicUserAuth: []
@@ -356,117 +898,132 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+      description: Developer token for accessing the Apple Music API.
     MusicUserAuth:
       type: apiKey
       name: Music-User-Token
       in: header
+      description: User token for accessing user-specific data.
 
   responses:
     Success:
-      description: API is reachable and authorized
+      description: The request was successful.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "success"
 
     Unauthorized:
-      description: Unauthorized
+      description: The request lacks valid authentication credentials.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized"
+              message:
+                type: string
+                example: "Invalid or missing authentication token"
 
     Error:
-      description: Error
+      description: An error occurred while processing the request.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
 
     SearchResponse:
-      description: Library playlists retrieved
+      description: Search results retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/SearchResponse"
 
     SearchHintsResponse:
-      description: Search hints retrieved
+      description: Search hints retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/SearchHintsResponse"
 
     LibrarySearchResponse:
-      description: Library search results retrieved
+      description: Library search results retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/LibrarySearchResponse"
 
     LibraryAlbumsResponse:
-      description: Library albums retrieved
+      description: Library albums retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/LibraryAlbumsResponse"
 
     LibrarySongsResponse:
-      description: Library songs retrieved
+      description: Library songs retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/LibrarySongsResponse"
 
     LibraryPlaylistsResponse:
-      description: Library playlists retrieved
+      description: Library playlists retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/LibraryPlaylistsResponse"
 
-    PlaylistTracksResponse:
-      description: Tracks retrieved
+    LibraryPlaylistTracksResponse:
+      description: Library playlist tracks retrieved successfully.
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/SongRelationship"
+            $ref: "#/components/schemas/LibraryPlaylistTracksResponse"
 
     RecommendationsResponse:
-      description: Recommendations retrieved
+      description: Recommendations retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/RecommendationResponse"
 
     RecommendationResponse:
-      description: Recommendation retrieved
+      description: Recommendation retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/RecommendationResponse"
 
     RecommendationContentsResponse:
-      description: Recommendation contents retrieved
+      description: Recommendation contents retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/RecommendationResponse"
 
     CatalogPlaylistResponse:
-      description: Catalog playlist retrieved
+      description: Catalog playlist retrieved successfully.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/PlaylistRelationship"
 
-    CatalogPlaylistTracksResponse:
-      description: Catalog playlist tracks retrieved
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/CatalogPlaylistTracksResponse"
-
   parameters:
     Language:
       name: l
       in: query
-      description: The localization to use, specified by a language tag.
+      description: The localization to use, specified by a language tag (e.g., "en-US").
       required: false
       schema:
         type: string
+        example: "en-US"
 
     Limit:
       name: limit
@@ -477,6 +1034,7 @@ components:
         default: 25
         minimum: 1
         maximum: 100
+        example: 10
 
     Offset:
       name: offset
@@ -486,6 +1044,7 @@ components:
         type: integer
         default: 0
         minimum: 0
+        example: 0
 
     Include:
       name: include
@@ -500,11 +1059,14 @@ components:
             - stations
             - music-videos
             - artists
+            - tracks
             - albums
             - curator
             - playlists
+            - catalog
       style: form
       explode: false
+      example: ["artists", "albums"]
 
     Extend:
       name: extend
@@ -521,14 +1083,16 @@ components:
             - radioShow
       style: form
       explode: false
+      example: ["artistURL"]
 
     Storefront:
       name: storefront
       in: path
       required: true
-      description: The storefront identifier.
+      description: The storefront identifier (e.g., "us" for United States).
       schema:
         type: string
+        example: "us"
 
     PlaylistId:
       name: playlist_id
@@ -537,6 +1101,7 @@ components:
       description: The identifier of the playlist.
       schema:
         type: string
+        example: "pl.1234567890"
 
     RecommendationId:
       name: recommendation_id
@@ -545,6 +1110,7 @@ components:
       description: The identifier of the recommendation.
       schema:
         type: string
+        example: "6-27s5hU6azhJY"
 
   schemas:
     SearchHintsResponse:
@@ -558,6 +1124,7 @@ components:
               items:
                 type: string
               description: A list of suggested search terms
+              example: ["Kiesza", "Kiesza Hideaway", "Kiesza Sound of a Woman"]
 
     LibrarySearchResponse:
       type: object
@@ -571,9 +1138,9 @@ components:
               $ref: "#/components/schemas/AlbumRelationship"
             library-playlists:
               $ref: "#/components/schemas/PlaylistRelationship"
-            library-library-music-videos:
+            library-music-videos:
               $ref: "#/components/schemas/AlbumRelationship"
-            library-library-song:
+            library-songs:
               $ref: "#/components/schemas/SongRelationship"
 
     LibraryAlbumsResponse:
@@ -586,6 +1153,7 @@ components:
           type: string
           nullable: true
           description: URL to the next page of results.
+          example: "https://api.music.apple.com/v1/me/library/albums?offset=25&limit=25"
         data:
           type: array
           items:
@@ -603,6 +1171,7 @@ components:
           type: string
           nullable: true
           description: URL to the next page of results.
+          example: "https://api.music.apple.com/v1/me/library/songs?offset=25&limit=25"
         data:
           type: array
           items:
@@ -620,6 +1189,7 @@ components:
           type: string
           nullable: true
           description: URL to the next page of results.
+          example: "https://api.music.apple.com/v1/me/library/playlists?offset=25&limit=25"
         data:
           type: array
           items:
@@ -627,24 +1197,29 @@ components:
         meta:
           $ref: "#/components/schemas/Meta"
 
-    CatalogPlaylistTracksResponse:
+    LibraryPlaylistTracksResponse:
       type: object
       required:
         - data
+        - meta
       properties:
         next:
           type: string
-          format: uri
+          description: URL to the next page of results.
+          example: "https://api.music.apple.com/v1/me/library/playlists/pl.1234567890/tracks?offset=25&limit=25"
         data:
           type: array
           items:
-            $ref: "#/components/schemas/Song"
+            $ref: "#/components/schemas/LibrarySong"
+        meta:
+          $ref: "#/components/schemas/Meta"
 
     ContentRating:
       type: string
       enum:
         - explicit
         - clean
+      example: "explicit"
 
     CatalogSearchType:
       type: string
@@ -659,6 +1234,7 @@ components:
         - record-labels
         - songs
         - stations
+      example: "songs"
 
     LibrarySearchType:
       type: string
@@ -668,6 +1244,7 @@ components:
         - library-music-videos
         - library-playlists
         - library-songs
+      example: "library-songs"
 
     Artwork:
       type: object
@@ -705,22 +1282,30 @@ components:
       properties:
         id:
           type: string
+          example: "1440812311"
         kind:
           type: string
+          example: "song"
         isLibrary:
           type: boolean
+          example: false
         globalId:
           type: string
           nullable: true
+          example: "1440812311"
         versionHash:
           type: string
           nullable: true
+          example: "abc123"
         reporting:
           type: boolean
+          example: true
         catalogId:
           type: string
+          example: "1440812311"
         reportingId:
           type: string
+          example: "1440812311"
 
     Meta:
       type: object
@@ -730,6 +1315,7 @@ components:
         total:
           type: integer
           description: Total number of items available.
+          example: 100
 
     SearchResponse:
       type: object
@@ -786,100 +1372,20 @@ components:
                   type: array
                   items:
                     type: string
+                  example: ["songs", "albums", "artists"]
                 rawOrder:
                   type: array
                   items:
                     type: string
-
-    LibrarySong:
-      type: object
-      required:
-        - id
-        - type
-        - href
-        - attributes
-      properties:
-        id:
-          type: string
-        type:
-          $ref: "#/components/schemas/SongType"
-        href:
-          type: string
-        attributes:
-          $ref: "#/components/schemas/SongAttributes"
-
-    LibraryAlbum:
-      type: object
-      required:
-        - id
-        - type
-        - href
-        - attributes
-      properties:
-        id:
-          type: string
-        type:
-          $ref: "#/components/schemas/AlbumType"
-        href:
-          type: string
-        attributes:
-          $ref: "#/components/schemas/AlbumAttributes"
-
-    LibraryPlaylist:
-      type: object
-      required:
-        - id
-        - type
-        - href
-        - attributes
-      properties:
-        id:
-          type: string
-        type:
-          $ref: "#/components/schemas/PlaylistType"
-        href:
-          type: string
-        attributes:
-          type: object
-          required:
-            - lastModifiedDate
-            - canEdit
-            - name
-            - isPublic
-            - artwork
-            - hasCatalog
-            - dateAdded
-            - playParams
-          properties:
-            lastModifiedDate:
-              type: string
-              format: date-time
-            canEdit:
-              type: boolean
-            name:
-              type: string
-            isPublic:
-              type: boolean
-            description:
-              type: object
-              properties:
-                standard:
-                  type: string
-            artwork:
-              $ref: "#/components/schemas/Artwork"
-            hasCatalog:
-              type: boolean
-            dateAdded:
-              type: string
-              format: date-time
-            playParams:
-              $ref: "#/components/schemas/PlayParams"
+                  example: ["songs", "albums", "artists"]
 
     SongType:
       type: string
       enum:
         - songs
         - library-songs
+        - music-videos
+      example: "songs"
 
     Song:
       type: object
@@ -891,10 +1397,12 @@ components:
       properties:
         id:
           type: string
+          example: "1440812311"
         type:
           $ref: "#/components/schemas/SongType"
         href:
           type: string
+          example: "/v1/catalog/us/songs/1440812311"
         attributes:
           $ref: "#/components/schemas/SongAttributes"
         relationships:
@@ -908,46 +1416,63 @@ components:
     SongAttributes:
       type: object
       required:
+        - albumName
         - genreNames
         - trackNumber
         - durationInMillis
+        - releaseDate
+        - isrc
+        - artwork
+        - playParams
+        - url
         - discNumber
         - hasLyrics
+        - isAppleDigitalMaster
         - name
+        - previews
+        - artistName
       properties:
         albumName:
           type: string
-          example: "Sound of a Woman"
+          example: "Emotional Creature"
         genreNames:
           type: array
           items:
             type: string
-          example: ["Electronic", "Musik"]
+          example: ["Alternative", "Music"]
         trackNumber:
           type: integer
           example: 1
+        durationInMillis:
+          type: integer
+          example: 221000
         releaseDate:
           type: string
           format: date
-          example: "2014-01-01"
-        durationInMillis:
-          type: integer
-          example: 251987
-        ContentRating:
-          $ref: "#/components/schemas/ContentRating"
+          example: "2022-06-09"
         isrc:
           type: string
-          example: "USUM71400121"
+          example: "USQE92100257"
         artwork:
           $ref: "#/components/schemas/Artwork"
         composerName:
           type: string
-          example: "Kiesa Rae Ellestad & Rami Afuni"
+          example: "Anthony Vaccaro, Jon Alvarado, Lili Trifilio & Matt Henkels"
+        playParams:
+          type: object
+          required:
+            - id
+            - kind
+          properties:
+            id:
+              type: string
+              example: "1613600188"
+            kind:
+              type: string
+              example: "song"
         url:
           type: string
-          format: uri
-        playParams:
-          $ref: "#/components/schemas/PlayParams"
+          example: "https://music.apple.com/us/album/entropy/1613600183?i=1613600188"
         discNumber:
           type: integer
           example: 1
@@ -956,10 +1481,10 @@ components:
           example: true
         isAppleDigitalMaster:
           type: boolean
-          example: false
+          example: true
         name:
           type: string
-          example: "Hideaway"
+          example: "Entropy"
         previews:
           type: array
           items:
@@ -969,11 +1494,10 @@ components:
             properties:
               url:
                 type: string
-                format: uri
-                example: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview...plus.aac.p.m4a"
+                example: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/72/a3/ab/72a3ab79-0066-f773-6618-7a53adc250b3/mzaf_17921540907592750976.plus.aac.p.m4a"
         artistName:
           type: string
-          example: "Kiesza"
+          example: "Beach Bunny"
 
     SongRelationship:
       type: object
@@ -983,15 +1507,239 @@ components:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/Song"
+            oneOf:
+              - $ref: "#/components/schemas/Song"
+              - $ref: "#/components/schemas/MusicVideo"
+
         meta:
           $ref: "#/components/schemas/Meta"
         href:
           type: string
+          example: "/v1/catalog/us/songs/1440812311"
+
+    MusicVideo:
+      type: object
+      required:
+        - id
+        - type
+        - href
+        - attributes
+      properties:
+        id:
+          type: string
+          example: "1440812311"
+        type:
+          $ref: "#/components/schemas/SongType"
+        href:
+          type: string
+          example: "/v1/catalog/us/songs/1440812311"
+        attributes:
+          $ref: "#/components/schemas/MusicVideoAttributes"
+        relationships:
+          type: object
+          properties:
+            albums:
+              $ref: "#/components/schemas/AlbumRelationship"
+            artists:
+              $ref: "#/components/schemas/ArtistRelationship"
+
+    MusicVideoAttributes:
+      type: object
+      required:
+        - previews
+        - artwork
+        - artistName
+        - url
+        - genreNames
+        - has4K
+        - durationInMillis
+        - releaseDate
+        - name
+        - isrc
+        - hasHDR
+      properties:
+        previews:
+          type: array
+          items:
+            type: object
+            required:
+              - url
+              - hlsUrl
+              - artwork
+            properties:
+              url:
+                type: string
+                example: "https://video-ssl.itunes.apple.com/itunes-assets/Video114/v4/c8/14/3c/c8143cb4-e58a-8075-44b0-602f43d7646f/mzvf_2953199973497507158.720w.h264lc.U.p.m4v"
+              hlsUrl:
+                type: string
+                example: "https://play.itunes.apple.com/WebObjects/MZPlay.woa/hls/playlist.m3u8?cc=US&a=1553279848&id=231169237&l=en&aec=HD"
+              artwork:
+                $ref: "#/components/schemas/Artwork"
+        artwork:
+          $ref: "#/components/schemas/Artwork"
+        artistName:
+          type: string
+          example: "Dua Lipa"
+        url:
+          type: string
+          example: "https://music.apple.com/us/music-video/were-good/1553279848"
+        genreNames:
+          type: array
+          items:
+            type: string
+          example: ["Pop"]
+        has4K:
+          type: boolean
+          example: false
+        durationInMillis:
+          type: integer
+          example: 191913
+        releaseDate:
+          type: string
+          format: date
+          example: "2021-02-12"
+        name:
+          type: string
+          example: "We’re Good"
+        isrc:
+          type: string
+          example: "GB1302001140"
+        playParams:
+          type: object
+          required:
+            - id
+            - kind
+          properties:
+            id:
+              type: string
+              example: "1553279848"
+            kind:
+              type: string
+              example: "musicVideo"
+        hasHDR:
+          type: boolean
+          example: false
+
+    LibrarySong:
+      type: object
+      required:
+        - id
+        - type
+        - href
+        - attributes
+      properties:
+        id:
+          type: string
+          example: "l.1440812311"
+        type:
+          $ref: "#/components/schemas/SongType"
+        href:
+          type: string
+          example: "/v1/me/library/songs/l.1440812311"
+        attributes:
+          $ref: "#/components/schemas/LibrarySongAttributes"
+        relationships:
+          type: object
+          properties:
+            albums:
+              $ref: "#/components/schemas/LibraryAlbumRelationship"
+            artists:
+              $ref: "#/components/schemas/LibraryArtistRelationship"
+
+    LibrarySongAttributes:
+      type: object
+      required:
+        - albumName
+        - discNumber
+        - genreNames
+        - trackNumber
+        - hasLyrics
+        - releaseDate
+        - durationInMillis
+        - name
+        - artistName
+        - artwork
+      properties:
+        albumName:
+          type: string
+          example: "Un Verano Sin Ti"
+        discNumber:
+          type: integer
+          example: 1
+        genreNames:
+          type: array
+          items:
+            type: string
+          example: ["Latin"]
+        trackNumber:
+          type: integer
+          example: 10
+        hasLyrics:
+          type: boolean
+          example: true
+        releaseDate:
+          type: string
+          format: date
+          example: "2022-05-06"
+        durationInMillis:
+          type: integer
+          example: 213061
+        name:
+          type: string
+          example: "Efecto"
+        artistName:
+          type: string
+          example: "Bad Bunny"
+        artwork:
+          $ref: "#/components/schemas/Artwork"
+        playParams:
+          type: object
+          required:
+            - id
+            - kind
+            - isLibrary
+            - reporting
+            - catalogId
+            - reportingId
+          properties:
+            id:
+              type: string
+              example: "i.PkdJNdAIrQozOW"
+            kind:
+              type: string
+              example: "song"
+            isLibrary:
+              type: boolean
+              example: true
+            reporting:
+              type: boolean
+              example: true
+            catalogId:
+              type: string
+              example: "1622045954"
+            reportingId:
+              type: string
+              example: "1622045954"
+
+    LibrarySongRelationship:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LibrarySong"
+        meta:
+          $ref: "#/components/schemas/Meta"
+        href:
+          type: string
+          example: "/v1/me/library/songs/l.1440812311"
 
     AlbumType:
       type: string
       enum: [albums, library-albums]
+      example: "albums"
 
     Album:
       type: object
@@ -1002,10 +1750,12 @@ components:
       properties:
         id:
           type: string
+          example: "1440812310"
         type:
           $ref: "#/components/schemas/AlbumType"
         href:
           type: string
+          example: "/v1/catalog/us/albums/1440812310"
         attributes:
           $ref: "#/components/schemas/AlbumAttributes"
         relationships:
@@ -1013,6 +1763,8 @@ components:
           properties:
             artists:
               $ref: "#/components/schemas/ArtistRelationship"
+            tracks:
+              $ref: "#/components/schemas/SongRelationship"
 
     AlbumAttributes:
       type: object
@@ -1023,20 +1775,26 @@ components:
       properties:
         name:
           type: string
+          example: "Sound of a Woman"
         artistName:
           type: string
+          example: "Kiesza"
         genreNames:
           type: array
           items:
             type: string
+          example: ["Electronic", "Musik"]
         releaseDate:
           type: string
           format: date
+          example: "2014-01-01"
         dateAdded:
           type: string
           format: date-time
+          example: "2023-05-15T07:41:02Z"
         trackCount:
           type: integer
+          example: 12
         artwork:
           $ref: "#/components/schemas/Artwork"
         playParams:
@@ -1055,10 +1813,86 @@ components:
           $ref: "#/components/schemas/Meta"
         href:
           type: string
+          example: "/v1/catalog/us/albums/1440812310"
+
+    LibraryAlbum:
+      type: object
+      required:
+        - id
+        - href
+        - type
+      properties:
+        id:
+          type: string
+          example: "l.1440812310"
+        type:
+          $ref: "#/components/schemas/AlbumType"
+        href:
+          type: string
+          example: "/v1/me/library/albums/l.1440812310"
+        attributes:
+          $ref: "#/components/schemas/LibraryAlbumAttributes"
+        relationships:
+          type: object
+          properties:
+            artists:
+              $ref: "#/components/schemas/LibraryArtistRelationship"
+            tracks:
+              $ref: "#/components/schemas/LibrarySongRelationship"
+
+    LibraryAlbumAttributes:
+      type: object
+      required:
+        - name
+        - genreNames
+        - trackCount
+      properties:
+        name:
+          type: string
+          example: "Sound of a Woman"
+        artistName:
+          type: string
+          example: "Kiesza"
+        genreNames:
+          type: array
+          items:
+            type: string
+          example: ["Electronic", "Musik"]
+        releaseDate:
+          type: string
+          format: date
+          example: "2014-01-01"
+        dateAdded:
+          type: string
+          format: date-time
+          example: "2023-05-15T07:41:02Z"
+        trackCount:
+          type: integer
+          example: 12
+        artwork:
+          $ref: "#/components/schemas/Artwork"
+        playParams:
+          $ref: "#/components/schemas/PlayParams"
+
+    LibraryAlbumRelationship:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LibraryAlbum"
+        meta:
+          $ref: "#/components/schemas/Meta"
+        href:
+          type: string
+          example: "/v1/me/library/albums/l.1440812310"
 
     ArtistType:
       type: string
       enum: [artists, library-artists]
+      example: "artists"
 
     Artist:
       type: object
@@ -1069,10 +1903,12 @@ components:
       properties:
         id:
           type: string
+          example: "329523476"
         type:
           $ref: "#/components/schemas/ArtistType"
         href:
           type: string
+          example: "/v1/catalog/us/artists/329523476"
         attributes:
           $ref: "#/components/schemas/ArtistAttributes"
 
@@ -1083,6 +1919,13 @@ components:
       properties:
         name:
           type: string
+          example: "Kiesza"
+        artwork:
+          $ref: "#/components/schemas/Artwork"
+        url:
+          type: string
+          format: uri
+          example: "https://music.apple.com/us/artist/kiesza/329523476"
 
     ArtistRelationship:
       type: object
@@ -1097,6 +1940,55 @@ components:
           $ref: "#/components/schemas/Meta"
         href:
           type: string
+          example: "/v1/catalog/us/artists/329523476"
+
+    LibraryArtist:
+      type: object
+      required:
+        - id
+        - href
+        - type
+      properties:
+        id:
+          type: string
+          example: "l.329523476"
+        type:
+          $ref: "#/components/schemas/ArtistType"
+        href:
+          type: string
+          example: "/v1/me/library/artists/l.329523476"
+        attributes:
+          $ref: "#/components/schemas/LibraryArtistAttributes"
+
+    LibraryArtistAttributes:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Kiesza"
+        artwork:
+          $ref: "#/components/schemas/Artwork"
+        url:
+          type: string
+          format: uri
+          example: "https://music.apple.com/us/artist/kiesza/329523476"
+
+    LibraryArtistRelationship:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LibraryArtist"
+        meta:
+          $ref: "#/components/schemas/Meta"
+        href:
+          type: string
+          example: "/v1/me/library/artists/l.329523476"
 
     Curator:
       type: object
@@ -1106,10 +1998,12 @@ components:
       properties:
         id:
           type: string
+          example: "976439552"
         type:
           type: string
           enum:
             - social-profiles
+          example: "social-profiles"
         attributes:
           $ref: "#/components/schemas/CuratorAttributes"
 
@@ -1120,8 +2014,13 @@ components:
       properties:
         name:
           type: string
+          example: "Apple Music"
         artwork:
           $ref: "#/components/schemas/Artwork"
+        url:
+          type: string
+          format: uri
+          example: "https://music.apple.com/us/curator/apple-music/976439552"
 
     CuratorRelationship:
       type: object
@@ -1136,6 +2035,7 @@ components:
           $ref: "#/components/schemas/Meta"
         href:
           type: string
+          example: "/v1/catalog/us/curators/976439552"
 
     PlaylistType:
       type: string
@@ -1144,6 +2044,7 @@ components:
         - library-playlists
         - personal-mix
         - editorial
+      example: "playlists"
 
     Playlist:
       type: object
@@ -1154,31 +2055,40 @@ components:
       properties:
         id:
           type: string
+          example: "pl.1234567890"
         type:
           $ref: "#/components/schemas/PlaylistType"
         href:
           type: string
+          example: "/v1/catalog/us/playlists/pl.1234567890"
         attributes:
           $ref: "#/components/schemas/PlaylistAttributes"
         relationships:
           type: object
           properties:
-            curator:
-              $ref: "#/components/schemas/CuratorRelationship"
             tracks:
               $ref: "#/components/schemas/SongRelationship"
 
     PlaylistAttributes:
       type: object
       required:
-        - curatorName
-        - lastModifiedDate
         - name
-        - isChart
-        - playlistType
-        - url
+        - lastModifiedDate
         - playParams
       properties:
+        canEdit:
+          type: boolean
+          example: false
+        isPublic:
+          type: boolean
+          example: true
+        hasCatalog:
+          type: boolean
+          example: true
+        dateAdded:
+          type: string
+          format: date-time
+          example: "2023-05-15T07:41:02Z"
         curatorName:
           type: string
           example: "Apple Music für Dennis"
@@ -1206,6 +2116,7 @@ components:
         url:
           type: string
           format: uri
+          example: "https://music.apple.com/us/playlist/heavy-rotation-mix/pl.1234567890"
         playParams:
           $ref: "#/components/schemas/PlayParams"
 
@@ -1222,14 +2133,106 @@ components:
           $ref: "#/components/schemas/Meta"
         href:
           type: string
+          example: "/v1/catalog/us/playlists/pl.1234567890"
+
+    LibraryPlaylist:
+      type: object
+      required:
+        - id
+        - type
+        - href
+      properties:
+        id:
+          type: string
+          example: "p.1234567890"
+        type:
+          $ref: "#/components/schemas/PlaylistType"
+        href:
+          type: string
+          example: "/v1/me/library/playlists/p.1234567890"
+        attributes:
+          $ref: "#/components/schemas/LibraryPlaylistAttributes"
+        relationships:
+          type: object
+          properties:
+            tracks:
+              $ref: "#/components/schemas/LibrarySongRelationship"
+
+    LibraryPlaylistAttributes:
+      type: object
+      required:
+        - name
+        - lastModifiedDate
+        - playParams
+      properties:
+        canEdit:
+          type: boolean
+          example: true
+        isPublic:
+          type: boolean
+          example: false
+        hasCatalog:
+          type: boolean
+          example: true
+        dateAdded:
+          type: string
+          format: date-time
+          example: "2023-05-15T07:41:02Z"
+        curatorName:
+          type: string
+          example: "Dennis Oberhoff"
+        lastModifiedDate:
+          type: string
+          format: date-time
+          example: "2025-05-15T07:41:02Z"
+        name:
+          type: string
+          example: "My Favorite Songs"
+        isChart:
+          type: boolean
+          example: false
+        playlistType:
+          type: string
+          example: "user"
+        description:
+          type: object
+          properties:
+            standard:
+              type: string
+              example: "My personal collection of favorite songs."
+        artwork:
+          $ref: "#/components/schemas/Artwork"
+        url:
+          type: string
+          format: uri
+          example: "https://music.apple.com/us/playlist/my-favorite-songs/p.1234567890"
+        playParams:
+          $ref: "#/components/schemas/PlayParams"
+
+    LibraryPlaylistRelationship:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Playlist"
+        meta:
+          $ref: "#/components/schemas/Meta"
+        href:
+          type: string
+          example: "/v1/me/library/playlists/p.1234567890"
 
     RecommendationRowType:
       type: string
       enum: [personal-recommendation, playlists]
+      example: "personal-recommendation"
 
     RecommendationType:
       type: string
       enum: [playlists, albums, stations]
+      example: "playlists"
 
     RecommendationResponse:
       type: object
@@ -1258,6 +2261,7 @@ components:
         href:
           type: string
           format: uri
+          example: "/v1/me/recommendations/6-27s5hU6azhJY"
         attributes:
           $ref: "#/components/schemas/RecommendationRowAttributes"
         relationships:
@@ -1272,11 +2276,13 @@ components:
       properties:
         id:
           type: string
+          example: "pl.1234567890"
         type:
           $ref: "#/components/schemas/RecommendationType"
         href:
           type: string
           format: uri
+          example: "/v1/catalog/us/playlists/pl.1234567890"
         attributes:
           $ref: "#/components/schemas/RecommendationAttributes"
 
@@ -1285,30 +2291,38 @@ components:
       properties:
         standard:
           type: string
+          example: "A collection of the best new music."
         short:
           type: string
+          example: "Best new music."
 
     RecommendationAttributes:
       type: object
       properties:
         name:
           type: string
+          example: "New Music Mix"
         artistName:
           type: string
+          example: "Various Artists"
         curatorName:
           type: string
+          example: "Apple Music"
         lastModifiedDate:
           type: string
           format: date-time
+          example: "2025-05-15T07:41:02Z"
         releaseDate:
           type: string
           format: date
+          example: "2025-05-15"
         description:
           $ref: "#/components/schemas/Description"
         genreNames:
           type: array
           items:
             type: string
+          example: ["Pop", "Rock"]
         playlistType:
           $ref: "#/components/schemas/PlaylistType"
         artwork:
@@ -1318,28 +2332,38 @@ components:
         url:
           type: string
           format: uri
+          example: "https://music.apple.com/us/playlist/new-music-mix/pl.1234567890"
         isChart:
           type: boolean
+          example: false
         isCompilation:
           type: boolean
+          example: true
         isMasteredForItunes:
           type: boolean
+          example: true
         isSingle:
           type: boolean
+          example: false
         isComplete:
           type: boolean
+          example: true
         trackCount:
           type: integer
+          example: 20
         recordLabel:
           type: string
+          example: "Apple Music"
         copyright:
           type: string
+          example: "© 2025 Apple Music"
 
     RecommendationRowKind:
       type: string
       enum:
         - recently-played
         - music-recommendations
+      example: "music-recommendations"
 
     RecommendationRowAttributes:
       type: object
@@ -1352,6 +2376,7 @@ components:
       properties:
         isGroupRecommendation:
           type: boolean
+          example: true
         resourceTypes:
           type: array
           items:
@@ -1360,20 +2385,24 @@ components:
               - albums
               - playlists
               - stations
+          example: ["playlists"]
         title:
           type: object
           properties:
             stringForDisplay:
               type: string
+              example: "Recommended For You"
             contentIds:
               type: array
               items:
                 type: string
+              example: ["pl.1234567890", "pl.0987654321"]
         kind:
           $ref: "#/components/schemas/RecommendationRowKind"
         nextUpdateDate:
           type: string
           format: date-time
+          example: "2025-05-22T07:41:02Z"
 
     RecommendationRowRelationship:
       required:
@@ -1388,6 +2417,7 @@ components:
             href:
               type: string
               format: uri
+              example: "/v1/me/recommendations/6-27s5hU6azhJY/contents"
             data:
               type: array
               items:
@@ -1403,11 +2433,16 @@ components:
             properties:
               id:
                 type: string
+                example: "123e4567-e89b-12d3-a456-426614174000"
               title:
                 type: string
+                example: "Invalid Request"
               status:
                 type: string
+                example: "400"
               code:
                 type: string
+                example: "BAD_REQUEST"
               detail:
                 type: string
+                example: "The request was invalid or cannot be served."
