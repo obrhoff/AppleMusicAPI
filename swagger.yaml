@@ -2353,36 +2353,6 @@ components:
           type: string
           example: "/v1/me/library/songs/l.1440812311"
 
-    ViewResource:
-      type: object
-      properties:
-        href:
-          type: string
-          description: API endpoint URL
-          example: "/v1/catalog/de/artists/262836961/view/live-albums"
-        attributes:
-          type: object
-          required:
-            - title
-          properties:
-            title:
-              type: string
-              example: "Livealben"
-        data:
-          type: array
-          items:
-            oneOf:
-              - $ref: "#/components/schemas/Album"
-              - $ref: "#/components/schemas/Artist"
-              - $ref: "#/components/schemas/Playlist"
-              - $ref: "#/components/schemas/Song"
-              - $ref: "#/components/schemas/MusicVideo"
-
-      required:
-        - href
-        - attributes
-        - data
-
     AlbumType:
       type: string
       enum: [albums, library-albums]
@@ -2558,33 +2528,6 @@ components:
           example: "/v1/catalog/us/artists/329523476"
         attributes:
           $ref: "#/components/schemas/ArtistAttributes"
-        views:
-          type: object
-          properties:
-            live-albums:
-              $ref: "#/components/schemas/ViewResource"
-            featured-music-videos:
-              $ref: "#/components/schemas/ViewResource"
-            featured-albums:
-              $ref: "#/components/schemas/ViewResource"
-            latest-release:
-              $ref: "#/components/schemas/ViewResource"
-            top-songs:
-              $ref: "#/components/schemas/ViewResource"
-            similar-artists:
-              $ref: "#/components/schemas/ViewResource"
-            appears-on-albums:
-              $ref: "#/components/schemas/ViewResource"
-            featured-playlists:
-              $ref: "#/components/schemas/ViewResource"
-            top-music-videos:
-              $ref: "#/components/schemas/ViewResource"
-            compilation-albums:
-              $ref: "#/components/schemas/ViewResource"
-            singles:
-              $ref: "#/components/schemas/ViewResource"
-            full-albums:
-              $ref: "#/components/schemas/ViewResource"
 
     ArtistAttributes:
       type: object
