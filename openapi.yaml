@@ -82,7 +82,7 @@ paths:
 
   /catalog/{storefront}/artists/{artist_id}:
     get:
-      tags: [Catalog]
+      tags: [Catalog Artist]
       summary: Get a catalog artist
       description: Fetch detailed information about a specific artist from the Apple Music catalog.
       security:
@@ -99,6 +99,29 @@ paths:
         - $ref: "#/components/parameters/Language"
         - $ref: "#/components/parameters/Include"
         - $ref: "#/components/parameters/Extend"
+        - name: views
+          in: query
+          required: false
+          description: Comma-separated list of views to include in the response.
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - appears-on-albums
+                - compilation-albums
+                - featured-albums
+                - featured-music-videos
+                - featured-playlists
+                - full-albums
+                - latest-release
+                - live-albums
+                - similar-artists
+                - singles
+                - top-music-videos
+                - top-songs
+          style: form
+          explode: false
       responses:
         "200":
           description: Catalog artist retrieved successfully
@@ -110,7 +133,7 @@ paths:
 
   /catalog/{storefront}/artists/{artist_id}/albums:
     get:
-      tags: [Catalog]
+      tags: [Catalog Artist]
       summary: Get albums by a catalog artist
       description: Fetch albums associated with a specific artist from the Apple Music catalog.
       security:
@@ -138,7 +161,7 @@ paths:
 
   /catalog/{storefront}/artists/{artist_id}/playlists:
     get:
-      tags: [Catalog]
+      tags: [Catalog Artist]
       summary: Get playlists featuring a catalog artist
       description: Fetch playlists that feature a specific artist from the Apple Music catalog.
       security:
@@ -166,7 +189,7 @@ paths:
 
   /catalog/{storefront}/artists/{artist_id}/genres:
     get:
-      tags: [Catalog]
+      tags: [Catalog Artist]
       summary: Get genres associated with a catalog artist
       description: Fetch genres associated with a specific artist from the Apple Music catalog.
       security:
@@ -189,7 +212,7 @@ paths:
 
   /catalog/{storefront}/artists/{artist_id}/station:
     get:
-      tags: [Catalog]
+      tags: [Catalog Artist]
       summary: Get radio station for a catalog artist
       description: Fetch the radio station associated with a specific artist from the Apple Music catalog.
       security:
@@ -212,7 +235,7 @@ paths:
 
   /catalog/{storefront}/artists/{artist_id}/music-videos:
     get:
-      tags: [Catalog]
+      tags: [Catalog Artist]
       summary: Get music videos by a catalog artist
       description: Fetch music videos associated with a specific artist from the Apple Music catalog.
       security:
@@ -233,9 +256,380 @@ paths:
         "200": { $ref: "#/components/responses/Success" }
         "default": { $ref: "#/components/responses/Error" }
 
+  /catalog/{storefront}/artists/{artist_id}/view/appears-on-albums:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/compilation-albums:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/featured-albums:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/featured-music-videos:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/featured-playlists:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaylistRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/full-albums:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/latest-release:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/live-albums:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/similar-artists:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArtistRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  # appears-on-albums,compilation-albums,featured-albums,featured-music-videos,featured-playlists,full-albums,latest-release,live-albums,similar-artists,singles,top-music-videos,top-songs
+  /catalog/{storefront}/artists/{artist_id}/view/singles:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/top-music-videos:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/artists/{artist_id}/view/top-songs:
+    get:
+      tags: [Catalog Artist View]
+      summary: Get Appears on Album by a catalog artist
+      description: Fetch albums associated with a specific artist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: artist_id
+          in: path
+          required: true
+          description: The identifier of the catalog artist.
+          schema:
+            type: string
+            example: "329523476"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Artist albums retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SongRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
   /catalog/{storefront}/albums/{album_id}:
     get:
-      tags: [Catalog]
+      tags: [Catalog Album]
       summary: Get a catalog album
       description: Fetch detailed information about a specific album from the Apple Music catalog.
       security:
@@ -252,6 +646,21 @@ paths:
         - $ref: "#/components/parameters/Language"
         - $ref: "#/components/parameters/Include"
         - $ref: "#/components/parameters/Extend"
+        - name: views
+          in: query
+          required: false
+          description: Comma-separated list of views to include in the response.
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - appears-on
+                - other-versions
+                - related-albums
+                - related-videos
+          style: form
+          explode: false
       responses:
         "200":
           description: Catalog album retrieved successfully
@@ -263,7 +672,7 @@ paths:
 
   /catalog/{storefront}/albums/{album_id}/tracks:
     get:
-      tags: [Catalog]
+      tags: [Catalog Album]
       summary: Get tracks from a catalog album
       description: Fetch tracks associated with a specific album from the Apple Music catalog.
       security:
@@ -291,7 +700,7 @@ paths:
 
   /catalog/{storefront}/albums/{album_id}/artists:
     get:
-      tags: [Catalog]
+      tags: [Catalog Album]
       summary: Get artists from a catalog album
       description: Fetch artists associated with a specific album from the Apple Music catalog.
       security:
@@ -319,7 +728,7 @@ paths:
 
   /catalog/{storefront}/albums/{album_id}/library:
     get:
-      tags: [Catalog]
+      tags: [Catalog Album]
       summary: Check if album is in user's library
       description: Check if a specific album is in the user's library.
       security:
@@ -342,7 +751,7 @@ paths:
 
   /catalog/{storefront}/albums/{album_id}/record-labels:
     get:
-      tags: [Catalog]
+      tags: [Catalog Album]
       summary: Get record labels for a catalog album
       description: Fetch record labels associated with a specific album from the Apple Music catalog.
       security:
@@ -363,9 +772,162 @@ paths:
         "200": { $ref: "#/components/responses/Success" }
         "default": { $ref: "#/components/responses/Error" }
 
+  /catalog/{storefront}/albums/{album_id}/view/appears-on:
+    get:
+      tags: [Catalog Album View]
+      summary: Get tracks from a catalog album
+      description: Fetch tracks associated with a specific album from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Album tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaylistRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/albums/{album_id}/view/other-versions:
+    get:
+      tags: [Catalog Album View]
+      summary: Get tracks from a catalog album
+      description: Fetch tracks associated with a specific album from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Album tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/albums/{album_id}/view/related-albums:
+    get:
+      tags: [Catalog Album View]
+      summary: Get tracks from a catalog album
+      description: Fetch tracks associated with a specific album from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Album tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/albums/{album_id}/view/related-videos:
+    get:
+      tags: [Catalog Album View]
+      summary: Get tracks from a catalog album
+      description: Fetch tracks associated with a specific album from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: album_id
+          in: path
+          required: true
+          description: The identifier of the catalog album.
+          schema:
+            type: string
+            example: "1440812310"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+
+      responses:
+        "200":
+          description: Album tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SongRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/songs:
+    get:
+      tags: [Catalog Song]
+      summary: Get a catalog song
+      description: Fetch detailed information about multiple specific song from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          description: The identifiers of the catalog songs.
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+          example: ["1440812311", "203709340"]
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+      responses:
+        "200":
+          description: Catalog multiple songs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SongRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
   /catalog/{storefront}/songs/{song_id}:
     get:
-      tags: [Catalog]
+      tags: [Catalog Song]
       summary: Get a catalog song
       description: Fetch detailed information about a specific song from the Apple Music catalog.
       security:
@@ -393,7 +955,7 @@ paths:
 
   /catalog/{storefront}/songs/{song_id}/albums:
     get:
-      tags: [Catalog]
+      tags: [Catalog Song]
       summary: Get albums featuring a catalog song
       description: Fetch albums that feature a specific song from the Apple Music catalog.
       security:
@@ -421,7 +983,7 @@ paths:
 
   /catalog/{storefront}/songs/{song_id}/artists:
     get:
-      tags: [Catalog]
+      tags: [Catalog Song]
       summary: Get artists of a catalog song
       description: Fetch artists associated with a specific song from the Apple Music catalog.
       security:
@@ -449,7 +1011,7 @@ paths:
 
   /catalog/{storefront}/songs/{song_id}/composer:
     get:
-      tags: [Catalog]
+      tags: [Catalog Song]
       summary: Get composer of a catalog song
       description: Fetch the composer of a specific song from the Apple Music catalog.
       security:
@@ -472,7 +1034,7 @@ paths:
 
   /catalog/{storefront}/songs/{song_id}/genres:
     get:
-      tags: [Catalog]
+      tags: [Catalog Song]
       summary: Get genres of a catalog song
       description: Fetch genres associated with a specific song from the Apple Music catalog.
       security:
@@ -495,7 +1057,7 @@ paths:
 
   /catalog/{storefront}/songs/{song_id}/library:
     get:
-      tags: [Catalog]
+      tags: [Catalog Song]
       summary: Check if song is in user's library
       description: Check if a specific song is in the user's library.
       security:
@@ -518,7 +1080,7 @@ paths:
 
   /catalog/{storefront}/songs/{song_id}/music-videos:
     get:
-      tags: [Catalog]
+      tags: [Catalog Song]
       summary: Get music videos for a catalog song
       description: Fetch music videos associated with a specific song from the Apple Music catalog.
       security:
@@ -541,7 +1103,7 @@ paths:
 
   /catalog/{storefront}/songs/{song_id}/station:
     get:
-      tags: [Catalog]
+      tags: [Catalog Song]
       summary: Get radio station for a catalog song
       description: Fetch the radio station associated with a specific song from the Apple Music catalog.
       security:
@@ -564,7 +1126,7 @@ paths:
 
   /catalog/{storefront}/playlists/{playlist_id}:
     get:
-      tags: [Catalog]
+      tags: [Catalog Playlist]
       summary: Get a catalog playlist
       description: Fetch detailed information about a specific playlist from the Apple Music catalog.
       security:
@@ -575,13 +1137,26 @@ paths:
         - $ref: "#/components/parameters/Language"
         - $ref: "#/components/parameters/Include"
         - $ref: "#/components/parameters/Extend"
+        - name: views
+          in: query
+          required: false
+          description: Comma-separated list of views to include in the response.
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - featured-artists
+                - more-by-curator
+          style: form
+          explode: false
       responses:
         "200": { $ref: "#/components/responses/CatalogPlaylistResponse" }
         "default": { $ref: "#/components/responses/Error" }
 
   /catalog/{storefront}/playlists/{playlist_id}/tracks:
     get:
-      tags: [Catalog]
+      tags: [Catalog Playlist]
       summary: Get tracks from a catalog playlist
       description: Fetch tracks associated with a specific playlist from the Apple Music catalog.
       security:
@@ -605,7 +1180,7 @@ paths:
 
   /catalog/{storefront}/playlists/{playlist_id}/library:
     get:
-      tags: [Catalog]
+      tags: [Catalog Playlist]
       summary: Check if playlist is in user's library
       description: Check if a specific playlist is in the user's library.
       security:
@@ -624,7 +1199,7 @@ paths:
 
   /catalog/{storefront}/playlists/{playlist_id}/curator:
     get:
-      tags: [Catalog]
+      tags: [Catalog Playlist]
       summary: Get curator of a catalog playlist
       description: Fetch the curator of a specific playlist from the Apple Music catalog.
       security:
@@ -641,6 +1216,50 @@ paths:
         "200": { $ref: "#/components/responses/Success" }
         "default": { $ref: "#/components/responses/Error" }
 
+  /catalog/{storefront}/playlists/{playlist_id}/views/featured-artists:
+    get:
+      tags: [Catalog Playlist View]
+      summary: Get tracks from a catalog playlist
+      description: Fetch tracks associated with a specific playlist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PlaylistId"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200":
+          description: Playlist tracks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArtistRelationship"
+        "default": { $ref: "#/components/responses/Error" }
+
+  /catalog/{storefront}/playlists/{playlist_id}/views/more-by-curator:
+    get:
+      tags: [Catalog Playlist View]
+      summary: Get curator of a catalog playlist
+      description: Fetch the curator of a specific playlist from the Apple Music catalog.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PlaylistId"
+        - $ref: "#/components/parameters/Storefront"
+        - $ref: "#/components/parameters/Language"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Include"
+        - $ref: "#/components/parameters/Extend"
+        - $ref: "#/components/parameters/With"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "default": { $ref: "#/components/responses/Error" }
   /me/library/search:
     get:
       tags: [Library]
@@ -1085,6 +1704,19 @@ components:
       explode: false
       example: ["artistURL"]
 
+    With:
+      name: with
+      in: query
+      description: With following View Attributes
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - attributes
+      style: form
+      explode: false
+
     Storefront:
       name: storefront
       in: path
@@ -1339,26 +1971,17 @@ components:
                       - $ref: "#/components/schemas/Artist"
                       - $ref: "#/components/schemas/Playlist"
                       - $ref: "#/components/schemas/Curator"
+                      - $ref: "#/components/schemas/MusicVideo"
             songs:
-              type: array
-              items:
-                $ref: "#/components/schemas/SongRelationship"
+              $ref: "#/components/schemas/SongRelationship"
             albums:
-              type: array
-              items:
-                $ref: "#/components/schemas/AlbumRelationship"
+              $ref: "#/components/schemas/AlbumRelationship"
             artists:
-              type: array
-              items:
-                $ref: "#/components/schemas/ArtistRelationship"
+              $ref: "#/components/schemas/ArtistRelationship"
             playlists:
-              type: array
-              items:
-                $ref: "#/components/schemas/PlaylistRelationship"
+              $ref: "#/components/schemas/PlaylistRelationship"
             curators:
-              type: array
-              items:
-                $ref: "#/components/schemas/CuratorRelationship"
+              $ref: "#/components/schemas/CuratorRelationship"
         meta:
           type: object
           properties:
@@ -1420,7 +2043,6 @@ components:
         - genreNames
         - trackNumber
         - durationInMillis
-        - releaseDate
         - isrc
         - artwork
         - playParams
@@ -1551,12 +2173,8 @@ components:
         - artistName
         - url
         - genreNames
-        - has4K
-        - durationInMillis
-        - releaseDate
         - name
         - isrc
-        - hasHDR
       properties:
         previews:
           type: array
@@ -1564,7 +2182,6 @@ components:
             type: object
             required:
               - url
-              - hlsUrl
               - artwork
             properties:
               url:
